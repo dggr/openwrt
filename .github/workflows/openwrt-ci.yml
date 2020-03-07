@@ -7,7 +7,7 @@
 # <https://github.com/KFERMercer/OpenWrt-CI>
 #
 
-name: OpenWrt-CI
+name: OpenWrt-X64
 
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
           ref: master
         #      ↑↑↑ 改成你的分支名, 一般是master
 
-      - name: Initialization environment
+      - name: 初始化环境
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
@@ -58,9 +58,18 @@ jobs:
           sudo -E apt-get -y autoremove --purge
           sudo -E apt-get clean
           
+      #- name: 自定义插件主题。
+      #  run: |
+      #    cd package
+      #    mkdir openwrt-packages
+      #    cd openwrt-packages
+      #    git clone https://github.com/openwrt-develop/luci-theme-atmaterial.git
+      #   git clone https://github.com/Ameykyl/luci-app-koolproxyR
+      #   git clone https://github.com/rosywrt/luci-theme-rosy
+          
       - name: 同步最新的源码
         run: |
-          git remote add openwrt https://github.com/coolsnowwolf/lede.git
+          git remote add openwrt https://github.com/openwrt/openwrt.git
           git pull openwrt master
           git remote -v
           
@@ -173,6 +182,22 @@ jobs:
           CONFIG_PACKAGE_luci-app-webadmin=y
           CONFIG_PACKAGE_luci-app-wireguard=y
           CONFIG_PACKAGE_luci-app-wrtbwmon=y
+          CONFIG_PACKAGE_luci-app-transmission=y
+          CONFIG_PACKAGE_luci-app-uhttpd=y
+          CONFIG_PACKAGE_luci-app-vsftpd=y
+          CONFIG_PACKAGE_luci-app-ddns=y
+          CONFIG_PACKAGE_luci-app-hd-idle=y
+          CONFIG_PACKAGE_luci-app-mwan=y
+          CONFIG_PACKAGE_luci-app-mwan3=y
+          CONFIG_PACKAGE_luci-app-samba=y
+          CONFIG_PACKAGE_luci-app-samba4=y
+          CONFIG_PACKAGE_luci-app-sqm=y
+          CONFIG_PACKAGE_luci-app-syncdial=y
+          CONFIG_PACKAGE_luci-app-upnp=y
+          CONFIG_PACKAGE_luci-app-usb-printer=y
+          CONFIG_PACKAGE_luci-app-wrtbwmon=y
+          CONFIG_PACKAGE_luci-app-lxc=y
+          CONFIG_PACKAGE_luci-app-aliddns=y
           EOF
 
           # LuCI主题:
@@ -205,7 +230,7 @@ jobs:
           sed -i 's/^[ \t]*//g' ./.config
           make defconfig
 
-      - name: Download package source code
+      - name: 下载源码包
         run: |
           make download -j8
           find dl -size -1024c -exec ls -l {} \;
